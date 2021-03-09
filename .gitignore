@@ -1,6 +1,10 @@
 # Pasta de binarios do vs
-bin/
-obj/
+[Bb]in/
+[Oo]bj/
+[Dd]ebug/
+[Rr]elease/
+x64/
 
-# executaveis
-*.exe
+# binarios
+*.dll
+csproj.user
