@@ -35,7 +35,7 @@ namespace Sincronizador_de_legendas
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
+                app.UseExceptionHandler("/Sincronizador/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
@@ -50,7 +50,7 @@ namespace Sincronizador_de_legendas
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=Sincronizador}/{action=Index}/{id?}");
             });
         }
     }

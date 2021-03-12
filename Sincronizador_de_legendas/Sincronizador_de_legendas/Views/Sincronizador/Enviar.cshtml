@@ -1,0 +1,16 @@
+﻿@{
+    ViewData["Title"] = "Enviar Arquivo(s)";
+}
+
+<div class="container">
+    @if (ViewData["Erro"] != null)
+    {
+        <h2 class="display-4">@ViewData["Erro"]</h2>
+    }
+</div>
+<div class="container">
+    @if (ViewData["Resultado"] != null)
+    {
+        <h4>@ViewData["Resultado"]</h4>
+    }
+</div>
