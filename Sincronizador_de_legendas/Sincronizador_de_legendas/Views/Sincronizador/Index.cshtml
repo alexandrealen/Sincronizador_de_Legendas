@@ -2,7 +2,7 @@
     ViewData["Title"] = "Enviar Arquivo";
 }
 
-<form method="post" enctype="multipart/form-data" asp-controller="Sincronizador" asp-action="Enviar">
+<form method="post" enctype="multipart/form-data" asp-controller="Sincronizador" asp-action="ProcessarArquivosDeLegenda">
     <div class="form-group">
         <div class="form-group">
             <h4>Enviar um ou mais arquivos :</h4>
@@ -11,13 +11,13 @@
         <div class="form-group form-inline">
             <label for="segundos" class="col-sm-2 col-form-label">Offset: </label>
             <div>
-                <input type="text" maxlength="3" size="2" name="segundos" placeholder="sec" required/>
+                <input type="text" size="8" name="offset" placeholder="ms" required/>
             </div>
         </div>
     </div>
     <div class="form-group">
         <div class="form-group form-inline">
-            <input type="submit" value="Enviar Arquivo" />
+            <input type="submit" value="Processar arquivo(s)" />
         </div>
     </div>
 </form>
