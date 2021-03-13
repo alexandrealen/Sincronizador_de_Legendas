@@ -5,6 +5,9 @@ using Sincronizador_de_legendas.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Sincronizador_de_legendas.Controllers
 {
@@ -23,19 +26,20 @@ namespace Sincronizador_de_legendas.Controllers
         }
 
         //método para enviar os arquivos usando a interface IFormFile
-        public IActionResult ProcessarArquivosDeLegenda(IEnumerable<IFormFile> arquivos, double offset)
-        {
-            string pastaDestino = $"{_appEnvironment.ContentRootPath}\\Resources\\";
+        public async Task<IActionResult> ProcessarArquivosDeLegenda(IEnumerable<IFormFile> arquivos, double offset)
+        { 
             foreach (var arquivo in arquivos)
             {   
-                //se o arquivo for inválido será retornado um erro
-                if (arquivo == null || arquivo.Length == 0 || !arquivo.FileName.Contains(".srt"))
+                string pastaDestino = $"{_appEnvironment.ContentRootPath}\\Resources\\";
+
+                //se houver arquivo(s) invalido(s) será retornado um erro
+                if (!await ArmazenarArquivo(arquivo, $"{pastaDestino}{arquivo.FileName}"))
                 {
                     ViewData["Erro"] = "Erro: Arquivo inválido ou não selecionado";
                     return View(ViewData);
                 }
 
-                //armazena o arquivo em um array, sendo cada indice uma linha
+                //armazena cada linha do arquivo em um indice do array
                 string[] arquivoArray = System.IO.File.ReadAllLines($"{pastaDestino}{arquivo.FileName}");
                 for(int i=0; i<arquivoArray.Length; i++)
                 {
@@ -60,8 +64,26 @@ namespace Sincronizador_de_legendas.Controllers
                 }
                 //armazena o arquivo formatado na pasta resources com "offseted-" na frente do nome
                 System.IO.File.WriteAllLines($"{pastaDestino}offseted-{arquivo.FileName}", arquivoArray);
+                
+
+                //deleta o arquivo original da pasta resources, deixando apenas o formatado
+                System.IO.File.Delete($"{pastaDestino}{arquivo.FileName}");
             }
             return View(ViewData);
+        }
+
+        private async Task<bool> ArmazenarArquivo(IFormFile arquivo, string destino)
+        { 
+            using (var stream = new FileStream(destino, FileMode.Create))
+            {
+                if (arquivo == null || arquivo.Length == 0)
+                {
+                    //retorna false caso o arquivo esteja inválido
+                    return false;
+                }
+                await arquivo.CopyToAsync(stream);
+            }
+            return true;
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
