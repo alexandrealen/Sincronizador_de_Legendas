@@ -5,9 +5,6 @@ using Sincronizador_de_legendas.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Sincronizador_de_legendas.Controllers
 {
@@ -28,7 +25,7 @@ namespace Sincronizador_de_legendas.Controllers
         //método para enviar os arquivos usando a interface IFormFile
         public IActionResult ProcessarArquivosDeLegenda(IEnumerable<IFormFile> arquivos, double offset)
         {
-            string destino = $"{_appEnvironment.ContentRootPath}\\Resources\\";
+            string pastaDestino = $"{_appEnvironment.ContentRootPath}\\Resources\\";
             foreach (var arquivo in arquivos)
             {   
                 //se o arquivo for inválido será retornado um erro
@@ -39,7 +36,7 @@ namespace Sincronizador_de_legendas.Controllers
                 }
 
                 //armazena o arquivo em um array, sendo cada indice uma linha
-                string[] arquivoArray = System.IO.File.ReadAllLines($"{destino}{arquivo.FileName}");
+                string[] arquivoArray = System.IO.File.ReadAllLines($"{pastaDestino}{arquivo.FileName}");
                 for(int i=0; i<arquivoArray.Length; i++)
                 {
                     //verifica se a linha é de tempo ou não
@@ -62,7 +59,7 @@ namespace Sincronizador_de_legendas.Controllers
                     }
                 }
                 //armazena o arquivo formatado na pasta resources com "offseted-" na frente do nome
-                System.IO.File.WriteAllLines($"{destino}offseted-{arquivo.FileName}", arquivoArray);
+                System.IO.File.WriteAllLines($"{pastaDestino}offseted-{arquivo.FileName}", arquivoArray);
             }
             return View(ViewData);
         }
