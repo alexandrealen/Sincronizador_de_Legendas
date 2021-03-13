@@ -26,28 +26,45 @@ namespace Sincronizador_de_legendas.Controllers
         }
 
         //método para enviar os arquivos usando a interface IFormFile
-        public async Task<IActionResult> Enviar(List<IFormFile> arquivos)
-        { 
-            var destino = $"{_appEnvironment.ContentRootPath}\\Resources\\";
+        public IActionResult ProcessarArquivosDeLegenda(IEnumerable<IFormFile> arquivos, double offset)
+        {
+            string destino = $"{_appEnvironment.ContentRootPath}\\Resources\\";
             foreach (var arquivo in arquivos)
             {   
-                if (arquivo == null || arquivo.Length == 0)
+                //se o arquivo for inválido será retornado um erro
+                if (arquivo == null || arquivo.Length == 0 || !arquivo.FileName.Contains(".srt"))
                 {
-                    //retorna a viewdata com erro
                     ViewData["Erro"] = "Erro: Arquivo inválido ou não selecionado";
                     return View(ViewData);
                 }
 
-                var destinoArquivo = $"{destino}{arquivo.FileName}";
-
-                //copia o arquivo recebido na pasta resources
-                using (var stream = new FileStream(destinoArquivo, FileMode.Create))
+                //armazena o arquivo em um array, sendo cada indice uma linha
+                string[] arquivoArray = System.IO.File.ReadAllLines($"{destino}{arquivo.FileName}");
+                for(int i=0; i<arquivoArray.Length; i++)
                 {
-                    await arquivo.CopyToAsync(stream);
+                    //verifica se a linha é de tempo ou não
+                    if(arquivoArray[i].Contains(" --> "))
+                    {
+                        //separa os tempos da linha e armazena-os
+                        string[] tempos = arquivoArray[i].Split(" --> ");
+                        string linhaFormatada = default;
+
+                        //ajuste do primeiro tempo da linha
+                        string tempoProcessado = DateTime.ParseExact(tempos[0], "HH:mm:ss,fff", System.Globalization.CultureInfo.InvariantCulture).AddMilliseconds(offset - (2 * offset)).ToString("HH:mm:ss,fff");
+                        linhaFormatada += $"{tempoProcessado} --> ";
+
+                        //ajuste do segundo tempo da linha
+                        tempoProcessado = DateTime.ParseExact(tempos[1], "HH:mm:ss,fff", System.Globalization.CultureInfo.InvariantCulture).AddMilliseconds(offset - (2 * offset)).ToString("HH:mm:ss,fff");
+                        linhaFormatada += tempoProcessado;
+
+                        //coloca a linha formatada no lugar da linha original
+                        arquivoArray[i] = linhaFormatada;
+                    }
                 }
+                //armazena o arquivo formatado na pasta resources com "offseted-" na frente do nome
+                System.IO.File.WriteAllLines($"{destino}offseted-{arquivo.FileName}", arquivoArray);
             }
-            ViewData["Resultado"] = "Arquivo(s) enviado(s) com sucesso!";
-            return View();
+            return View(ViewData);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
