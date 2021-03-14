@@ -14,7 +14,7 @@ namespace Sincronizador_de_legendas.Models
             List<ArquivosModel> lstArquivos = new List<ArquivosModel>();
             DirectoryInfo dirInfo = new DirectoryInfo(path);
             int i = 0;
-            foreach (var item in dirInfo.GetFiles().OrderByDescending(x => x.CreationTime))
+            foreach (var item in dirInfo.GetFiles().OrderBy(x => x.CreationTime))
             {
                 i++;
                 lstArquivos.Add(new ArquivosModel()
