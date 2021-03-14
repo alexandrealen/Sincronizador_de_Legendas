@@ -18,7 +18,7 @@ namespace Sincronizador_de_legendas.Controllers
         //e posteriormente salvar os arquivos na pasta resources
         public SincronizadorController(IWebHostEnvironment env)
         {
-            _pastaResources = $"{env.ContentRootPath}\\Resources";
+            _pastaResources = $"{env.ContentRootPath}\\Resources\\";
         }
 
         [HttpGet]
