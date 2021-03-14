@@ -9,3 +9,6 @@ x64/
 # binarios
 *.dll
 csproj.user
+
+# pasta destino das legendas formatadas
+Resources/
