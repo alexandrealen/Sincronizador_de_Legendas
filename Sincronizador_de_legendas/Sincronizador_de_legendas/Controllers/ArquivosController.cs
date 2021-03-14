@@ -1,41 +1,48 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Sincronizador_de_legendas.Models;
-using Microsoft.AspNetCore.Hosting;
+using System.Linq;
 
 namespace Sincronizador_de_legendas.Controllers
 {
     public class ArquivosController : Controller
     {
-        IWebHostEnvironment _appEnvironment;
-        ModelArquivos oModelArquivos = new ModelArquivos();
+        private readonly string _pastaResources;
+        private const string _contentType = "text/plain";
         //criei esse construtor para conseguir pegar o caminho onde a aplicação está rodando 
         //e posteriormente salvar os arquivos na pasta resources
         public ArquivosController(IWebHostEnvironment env)
         {
-            _appEnvironment = env;
+            _pastaResources = $"{env.ContentRootPath}\\Resources";
         }
 
+        [HttpGet]
         public IActionResult Index()
         {
-            var arquivos = oModelArquivos.GetArquivos($"{_appEnvironment.ContentRootPath}\\Resources\\");
+            var arquivos = ArquivosModel.GetArquivos($"{_pastaResources}\\Resources\\");
             return View(arquivos);
         }
 
-        public FileResult Download(string id)
+        [HttpGet]
+        public IActionResult Download(int id)
         {
-            int arquivoId = Convert.ToInt32(id);
-            var arquivos = oModelArquivos.GetArquivos($"{_appEnvironment.ContentRootPath}\\Resources\\");
+            if (id < 1)
+                return View();
+            var arquivos = ArquivosModel.GetArquivos($"{_pastaResources}\\Resources\\");
 
-            string nomeArquivo = arquivos.Where(x => x.ID == arquivoId).Select(x => x.Nome).First();
-            string caminhoArquivo = arquivos.Where(x => x.ID == arquivoId).Select(x => x.Caminho).First();
-            string contentType = "text/plain";
-            byte[] bytesArquivo = System.IO.File.ReadAllBytes(caminhoArquivo);
+            if(arquivos == null || !arquivos.Any())
+                return View();
 
-            return File(bytesArquivo, contentType, nomeArquivo); 
+            var arquivo = arquivos
+                .Where(x => x.ID == id)
+                .FirstOrDefault();
+
+            if (arquivo == null)
+                return View();
+
+            byte[] bytesArquivo = System.IO.File.ReadAllBytes(arquivo.Caminho);
+
+            return File(bytesArquivo, _contentType, arquivo.Nome);
         }
     }
 }
