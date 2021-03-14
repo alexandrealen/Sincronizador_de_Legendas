@@ -10,9 +10,6 @@
 <table>
     <tr>
         <th>
-            ID
-        </th>
-        <th>
             Nome
         </th>
         <th></th>
@@ -20,9 +17,6 @@
     @foreach (var item in Model)
     {
         <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.ID)
-            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Nome)
             </td>
