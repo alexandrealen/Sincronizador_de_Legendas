@@ -27,7 +27,6 @@ namespace Sincronizador_de_legendas.Controllers
             return View();
         }
 
-        //método para enviar os arquivos usando a interface IFormFile
         [HttpPost]
         public IActionResult ProcessarArquivosDeLegenda(IEnumerable<IFormFile> arquivos, double offset)
         {
@@ -35,7 +34,7 @@ namespace Sincronizador_de_legendas.Controllers
             {
                 try
                 {
-                    var arquivoProcessado = ProcessarLegenda(arquivo, offset);
+                    var arquivoProcessado = AplicarOffsetEmSrt(arquivo, offset);
 
                     //armazena o arquivo formatado na pasta resources com "offseted-" na frente do nome
                     System.IO.File.WriteAllLines($"{_pastaResources}offseted-{arquivo.FileName}", arquivoProcessado);
@@ -52,7 +51,7 @@ namespace Sincronizador_de_legendas.Controllers
             return View(ViewData);
         }
 
-        private static IEnumerable<string> ProcessarLegenda(IFormFile arquivo, double offset)
+        private static IEnumerable<string> AplicarOffsetEmSrt(IFormFile arquivo, double offset)
         {
             if(!arquivo.FileName.Contains(".srt"))
             {
