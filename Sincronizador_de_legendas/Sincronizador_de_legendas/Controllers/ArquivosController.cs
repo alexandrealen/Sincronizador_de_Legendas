@@ -19,24 +19,23 @@ namespace Sincronizador_de_legendas.Controllers
             _appEnvironment = env;
         }
 
-        // GET: /Reports/
-        public ActionResult Index()
+        public IActionResult Index()
         {
-            var _arquivos = oModelArquivos.GetArquivos($"{_appEnvironment.ContentRootPath}/Resources\\");
-            return View(_arquivos);
+            var arquivos = oModelArquivos.GetArquivos($"{_appEnvironment.ContentRootPath}\\Resources\\");
+            return View(arquivos);
         }
 
         public FileResult Download(string id)
         {
-            int _arquivoId = Convert.ToInt32(id);
-            var arquivos = oModelArquivos.GetArquivos($"{_appEnvironment.ContentRootPath}/Resources\\");
+            int arquivoId = Convert.ToInt32(id);
+            var arquivos = oModelArquivos.GetArquivos($"{_appEnvironment.ContentRootPath}\\Resources\\");
 
-            string nomeArquivo = (from arquivo in arquivos
-                                  where arquivo.ID == _arquivoId
-                                  select arquivo.Caminho).First();
+            string nomeArquivo = arquivos.Where(x => x.ID == arquivoId).Select(x => x.Nome).First();
+            string caminhoArquivo = arquivos.Where(x => x.ID == arquivoId).Select(x => x.Caminho).First();
+            string contentType = "text/plain";
+            byte[] bytesArquivo = System.IO.File.ReadAllBytes(caminhoArquivo);
 
-            string contentType = "text/srt";
-            return File(nomeArquivo, contentType, $"Subtitle.srt");
+            return File(bytesArquivo, contentType, nomeArquivo); 
         }
     }
 }

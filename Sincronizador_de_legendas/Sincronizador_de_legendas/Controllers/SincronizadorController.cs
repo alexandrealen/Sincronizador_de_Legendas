@@ -30,10 +30,10 @@ namespace Sincronizador_de_legendas.Controllers
         { 
             foreach (var arquivo in arquivos)
             {   
-                string pastaDestino = $"{_appEnvironment.ContentRootPath}/Resources";
+                string pastaDestino = $"{_appEnvironment.ContentRootPath}\\Resources";
 
                 //se houver arquivo(s) invalido(s) será retornado um erro
-                if (!await ArmazenarArquivo(arquivo, $"{pastaDestino}/{arquivo.FileName}"))
+                if (!await ArmazenarArquivo(arquivo, $"{pastaDestino}\\{arquivo.FileName}"))
                 {
                     ViewData["Erro"] = "Erro: Arquivo inválido ou não selecionado";
                     return View(ViewData);
@@ -63,12 +63,13 @@ namespace Sincronizador_de_legendas.Controllers
                     }
                 }
                 //armazena o arquivo formatado na pasta resources com "offseted-" na frente do nome
-                System.IO.File.WriteAllLines($"{pastaDestino}/offseted-{arquivo.FileName}", arquivoArray);
+                System.IO.File.WriteAllLines($"{pastaDestino}\\offseted-{arquivo.FileName}", arquivoArray);
                 
 
                 //deleta o arquivo original da pasta resources, deixando apenas o formatado
-                System.IO.File.Delete($"{pastaDestino}/{arquivo.FileName}");
+                System.IO.File.Delete($"{pastaDestino}\\{arquivo.FileName}");
             }
+            ViewData["Resultado"] = "Legenda(s) formatada(s) com sucesso!";
             return View(ViewData);
         }
 
