@@ -19,7 +19,7 @@ namespace Sincronizador_de_legendas.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            var arquivos = ArquivosModel.GetArquivos($"{_pastaResources}\\Resources\\");
+            var arquivos = ArquivosModel.GetArquivos(_pastaResources);
             return View(arquivos);
         }
 
@@ -28,7 +28,7 @@ namespace Sincronizador_de_legendas.Controllers
         {
             if (id < 1)
                 return View();
-            var arquivos = ArquivosModel.GetArquivos($"{_pastaResources}\\Resources\\");
+            var arquivos = ArquivosModel.GetArquivos(_pastaResources);
 
             if(arquivos == null || !arquivos.Any())
                 return View();
