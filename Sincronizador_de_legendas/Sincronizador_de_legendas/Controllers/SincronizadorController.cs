@@ -38,7 +38,7 @@ namespace Sincronizador_de_legendas.Controllers
                     var arquivoProcessado = ProcessarLegenda(arquivo, offset);
 
                     //armazena o arquivo formatado na pasta resources com "offseted-" na frente do nome
-                    System.IO.File.WriteAllLines($"{_pastaResources}\\offseted-{arquivo.FileName}", arquivoProcessado);
+                    System.IO.File.WriteAllLines($"{_pastaResources}offseted-{arquivo.FileName}", arquivoProcessado);
                 }
                 catch (Exception e)
                 {
@@ -64,6 +64,8 @@ namespace Sincronizador_de_legendas.Controllers
             .ReadToEnd()
             .Replace("\r", string.Empty)
             .Split("\n");
+
+            var menorTempo = TimeSpan.MinValue;
             for (int i = 0; i < arquivoArray.Length; i++)
             {
                 //verifica se a linha é de tempo ou não
@@ -71,6 +73,18 @@ namespace Sincronizador_de_legendas.Controllers
                 {
                     //separa os tempos da linha e armazena-os
                     string[] tempos = arquivoArray[i].Split(" --> ");
+
+                    //verifica se o arquivo final não vai ter tempo negativo
+                    if (menorTempo == TimeSpan.MinValue)
+                    {
+                        menorTempo = TimeSpan.Parse(tempos[0].Replace(",", "."));
+
+                        if (offset < 0 && Math.Abs(offset) > menorTempo.TotalMilliseconds)
+                        {
+                            throw new Exception($"{arquivo.FileName} não foi formatado pois o tempo da primeira legenda é de {menorTempo.TotalMilliseconds}ms e o offset é de {offset}ms, resultando em tempo negativo.");
+                        }
+                    }
+
                     string linhaFormatada = default;
 
                     //ajuste do primeiro tempo da linha
