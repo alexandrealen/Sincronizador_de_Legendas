@@ -24,9 +24,9 @@ namespace Sincronizador_de_legendas.Controllers
         }
 
         [HttpGet]
-        public IActionResult Download(int id)
+        public IActionResult Download(string nome)
         {
-            if (id < 1)
+            if (nome ==  null)
                 return View();
             var arquivos = ArquivosModel.GetArquivos(_pastaResources);
 
@@ -34,7 +34,7 @@ namespace Sincronizador_de_legendas.Controllers
                 return View();
 
             var arquivo = arquivos
-                .Where(x => x.ID == id)
+                .Where(x => x.Nome == nome)
                 .FirstOrDefault();
 
             if (arquivo == null)
