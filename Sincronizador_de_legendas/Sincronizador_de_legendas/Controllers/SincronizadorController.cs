@@ -74,11 +74,11 @@ namespace Sincronizador_de_legendas.Controllers
                     string linhaFormatada = default;
 
                     //ajuste do primeiro tempo da linha
-                    string tempoProcessado = DateTime.ParseExact(tempos[0], "HH:mm:ss,fff", System.Globalization.CultureInfo.InvariantCulture).AddMilliseconds(-offset).ToString("HH:mm:ss,fff");
+                    string tempoProcessado = DateTime.ParseExact(tempos[0], "HH:mm:ss,fff", System.Globalization.CultureInfo.InvariantCulture).AddMilliseconds(offset).ToString("HH:mm:ss,fff");
                     linhaFormatada += $"{tempoProcessado} --> ";
 
                     //ajuste do segundo tempo da linha
-                    tempoProcessado = DateTime.ParseExact(tempos[1], "HH:mm:ss,fff", System.Globalization.CultureInfo.InvariantCulture).AddMilliseconds(-offset).ToString("HH:mm:ss,fff");
+                    tempoProcessado = DateTime.ParseExact(tempos[1], "HH:mm:ss,fff", System.Globalization.CultureInfo.InvariantCulture).AddMilliseconds(offset).ToString("HH:mm:ss,fff");
                     linhaFormatada += tempoProcessado;
 
                     //coloca a linha formatada no lugar da linha original
